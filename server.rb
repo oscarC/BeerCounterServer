@@ -84,25 +84,9 @@ post '/Signup' do
     if user.save
     {"registration"=>{"status"=>"true","error_code"=>"0"}}.to_json
     else
-     {"registration"=>{"status"=>"false","error_code"=>"100"}}.to_json
+      {"registration"=>{"status"=>"false","error_code"=>"100"}}.to_json
     end
   end
-end
-
-# get an user friends
-get '/Friends/:id.json' do
- unless requires_authorization!
-  if params[:id]!=""
-    user=User.get(params[:id])
-    if user
-      user.to_json
-    else
-      {}.json
-    end
-  else
-   {}.json
-  end
- end
 end
 
 
