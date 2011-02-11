@@ -66,10 +66,10 @@ post '/Authenticate' do
       if user
         user.to_json
       else
-        {}.json
+        {}.to_json
       end
     else
-      {}.json
+      {}.to_json
     end
   end
 end
@@ -82,9 +82,9 @@ post '/Signup' do
     user.email=params['email']
     user.password=params['password']
     if user.save
-    {"registration"=>{"status"=>"true","error_code"=>"0"}}.json
+    {"registration"=>{"status"=>"true","error_code"=>"0"}}.to_json
     else
-     {"registration"=>{"status"=>"false","error_code"=>"100"}}.json
+     {"registration"=>{"status"=>"false","error_code"=>"100"}}.to_json
     end
   end
 end
