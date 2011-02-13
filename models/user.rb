@@ -7,10 +7,9 @@ class User
   property :twitter_id,        String
   property :facebook_id,        String
   property :created_at,  DateTime
-  has n, :userdrinks, :through => Resource
   has n, :friendships, :child_key => [:source_id]
   has n, :friends, self, :through => :friendships, :via => :target
-
+  has n, :userdrinks
 
    validates_presence_of :email
    validates_presence_of :password
