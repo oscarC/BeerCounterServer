@@ -126,16 +126,54 @@ get '/UserDrink/new' do
 end
 
 
+get '/GetUser' do
+ unless requires_authorization!
+   if params[:username]!=""
+    user=User.first(:email=>params[:username])||User.first(:nickname=>params[:username])
+     if user
+       user.to_json
+     else
+      ## User not found
+      {"response"=>{"status"=>"false","error_code"=>"102"}}.to_json
+     end
+   end
+ end
+end
 
-get '/User/list' do
-  @users = User.all
-  @users.first.nickname
+
+post '/User/Follow' do
+ unless requires_authorization!
+  if params[:user_id]!=""&&params[:folower_id]!=""
+    user=User.get(params[:user_id])
+    if user
+      follower=User.get(params[:folower_id])
+      if follower
+        user.friends<<follower
+        user.save
+        ## follower added
+        {"response"=>{"status"=>"true","error_code"=>"103"}}.to_json
+      else
+        ## User not found
+        {"response"=>{"status"=>"false","error_code"=>"102"}}.to_json
+      end
+
+    else
+      ## User not found
+      {"response"=>{"status"=>"false","error_code"=>"102"}}.to_json
+    end
+  else
+    #params errors
+    {"response"=>{"status"=>"false","error_code"=>"101"}}.to_json
+  end
+ end
 end
 
 
 get '/Drink/list' do
+  unless requires_authorization!
   @drinks = Drink.all
-  @drinks.first.name
+  @drinks.to_json
+  end
 end
 
 
