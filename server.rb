@@ -107,20 +107,24 @@ post '/Drink/new' do
   end
 end
 
-###########################################
-
-get '/UserDrink/new' do
+##
+get '/UserDrink/counter' do
   unless requires_authorization!
-    user  = User.new
-    drink = Drink.new
-    drink.name="Aguila 1"
-    drink.description="Example"
-    user.nickname="Junior"
-    user.drinks<<drink
-    if user.save
-    "true"
+    user=User.get(params[:user_id])
+    if user
+      drink =Drink.get(params[:drink_id])
+      if drink
+        userdrink=Userdrink.first(:user=>user,:drink=>drink)
+        userdrink.count=params[:count]
+        userdrink.save
+        {"response"=>{"status"=>"true","error_code"=>"0"}}.to_json
+      else
+      ## Drink not found
+      {"response"=>{"status"=>"false","error_code"=>"104"}}.to_json
+      end
     else
-     "402"
+     ## User not found
+    {"response"=>{"status"=>"false","error_code"=>"102"}}.to_json
     end
   end
 end
@@ -128,7 +132,6 @@ end
 
 get '/GetUser' do
  unless requires_authorization!
-   if params[:username]!=""
     user=User.first(:email=>params[:username])||User.first(:nickname=>params[:username])
      if user
        user.to_json
@@ -136,7 +139,6 @@ get '/GetUser' do
       ## User not found
       {"response"=>{"status"=>"false","error_code"=>"102"}}.to_json
      end
-   end
  end
 end
 
@@ -151,7 +153,7 @@ post '/User/Follow' do
         user.friends<<follower
         user.save
         ## follower added
-        {"response"=>{"status"=>"true","error_code"=>"103"}}.to_json
+        {"response"=>{"status"=>"true","error_code"=>"0"}}.to_json
       else
         ## User not found
         {"response"=>{"status"=>"false","error_code"=>"102"}}.to_json
