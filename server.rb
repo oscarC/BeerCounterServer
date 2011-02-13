@@ -3,6 +3,7 @@ require 'dm-core'
 require 'sinatra'
 require "yaml"
 require 'json'
+require 'time'
 require 'logger'
 require 'dm-core'
 require 'dm-validations'
@@ -94,15 +95,16 @@ post '/Drink/new' do
   unless requires_authorization!
     if params['name']!=""&&params['description']!=""
       drink = Drink.new
-      drink.name=params['name']
-      drink.description=params['description']
+      drink.name=params[:name]
+      drink.description=params[:description]
+      drink.picture_url=params[:picture_url]
       if drink.save
-        "true"
+       {"response"=>{"status"=>"true","error_code"=>"0"}}.to_json
       else
-        "false"
+        {"response"=>{"status"=>"true","error_code"=>"104"}}.to_json
       end
     else
-      "false"
+      {"response"=>{"status"=>"true","error_code"=>"100"}}.to_json
     end
   end
 end
@@ -115,7 +117,7 @@ post '/UserDrink/counter' do
       drink =Drink.get(params[:drink_id])
       if drink
         userdrink=Userdrink.first(:user=>user,:drink=>drink)
-        userdrink.count=params[:count]
+        userdrink.count=userdrink.count+1
         userdrink.save
         {"response"=>{"status"=>"true","error_code"=>"0"}}.to_json
       else
@@ -129,6 +131,29 @@ post '/UserDrink/counter' do
   end
 end
 
+
+#########
+post '/UserDrink/status' do
+  unless requires_authorization!
+    user=User.get(params[:user_id])
+    if user
+      drink =Drink.get(params[:drink_id])
+      if drink
+        userdrink=Userdrink.first(:user=>user,:drink=>drink)
+        userdrink.status=false
+        userdrink.stoped_at=Time.now
+        userdrink.save
+        {"response"=>{"status"=>"true","error_code"=>"0"}}.to_json
+      else
+      ## Drink not found
+      {"response"=>{"status"=>"false","error_code"=>"104"}}.to_json
+      end
+    else
+     ## User not found
+    {"response"=>{"status"=>"false","error_code"=>"102"}}.to_json
+    end
+  end
+end
 
 get '/GetUser' do
  unless requires_authorization!
