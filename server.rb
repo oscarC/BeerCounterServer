@@ -108,7 +108,7 @@ post '/Drink/new' do
 end
 
 ##
-get '/UserDrink/counter' do
+post '/UserDrink/counter' do
   unless requires_authorization!
     user=User.get(params[:user_id])
     if user
