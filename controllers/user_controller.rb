@@ -1,37 +1,48 @@
 post '/User/authenticate' do
   unless requires_authorization!
-    if params['email']!="" && params['password']!=""
-      user=User.first(:email =>params['email'],:password =>params['password'])
-      if user
-        user.to_json
-      else
-        {}.to_json
-      end
+    user = User.first(:email =>params['email'],:password =>params['password'])
+    if user
+      {"error_code"=>"0","user"=>user.to_json}.to_json
     else
-      {}.to_json
+      {"error_code"=>"104"}.to_json
     end
   end
 end
-
-
 
 post '/User/signup' do
   unless requires_authorization!
     user = User.new
-    user.nickname=params['nickname']
-    user.email=params['email']
-    user.password=params['password']
+    user.nickname = params['nickname']
+    user.email = params['email']
+    user.password = params['password']
     if user.save
-    {"registration"=>{"status"=>"true","error_code"=>"0"}}.to_json
+      {"error_code"=>"0"}.to_json
     else
-      {"registration"=>{"status"=>"false","error_code"=>"100"}}.to_json
+      {"error_code"=>"100"}.to_json
     end
   end
 end
 
-
+post '/User/drinking' do
+  unless requires_authorization!
+    if params['user_id'] != ""
+      user = User.get(params['user_id'])
+      if user
+        user.drinking = params['drinking']
+        if user.save
+          {"error_code"=>"0"}.to_json
+        else
+          {"error_code"=>"130"}.to_json
+        end
+      else
+        {"error_code"=>"131"}.to_json
+      end
+    end
+  end
+end
 
 ##
+
 post '/UserDrink/counter' do
   unless requires_authorization!
     user=User.get(params[:user_id])
@@ -53,34 +64,7 @@ post '/UserDrink/counter' do
   end
 end
 
-
-
 #########
-post '/User/drinking' do
-  unless requires_authorization!
-    user=User.get(params[:user_id])
-    if user
-      drink =Drink.get(params[:drink_id])
-      if drink
-        userdrink=Userdrink.first(:user=>user,:drink=>drink)
-        userdrink==params[:drinking]
-        user.drinking=params[:drinking]
-        user.stoped_at=Time.now if params[:drinking]=="false"
-        user.started_at=Time.now if params[:drinking]=="true"
-        user.save
-        userdrink.save
-        {"response"=>{"status"=>"true","error_code"=>"0"}}.to_json
-      else
-      ## Drink not found
-      {"response"=>{"status"=>"false","error_code"=>"104"}}.to_json
-      end
-    else
-     ## User not found
-    {"response"=>{"status"=>"false","error_code"=>"102"}}.to_json
-    end
-  end
-end
-
 
 post '/User/Follow' do
  unless requires_authorization!

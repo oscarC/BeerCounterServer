@@ -7,14 +7,9 @@ class User
   property :twitter_id,        String
   property :facebook_id,        String
   property :created_at,  DateTime
-<<<<<<< HEAD
-  property :drinking,        Boolean, :required => true, :default => false
-  has n, :userdrinks, :through => Resource
-=======
   property :started_drinking,  DateTime
   property :stoped_drinking,  DateTime
   property :drinking,       Boolean
->>>>>>> 8b0c4badb5075f5f3747f1734c3e108daba14ce0
   has n, :friendships, :child_key => [:source_id]
   has n, :friends, self, :through => :friendships, :via => :target
   has n, :userdrinks
