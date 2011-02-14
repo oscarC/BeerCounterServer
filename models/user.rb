@@ -7,6 +7,7 @@ class User
   property :twitter_id,        String
   property :facebook_id,        String
   property :created_at,  DateTime
+  property :drinking,        Boolean, :required => true, :default => false
   has n, :userdrinks, :through => Resource
   has n, :friendships, :child_key => [:source_id]
   has n, :friends, self, :through => :friendships, :via => :target

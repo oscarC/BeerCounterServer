@@ -40,6 +40,24 @@ configure :production do
 
 end
 
+get '/Welcome' do
+	"Welcome"
+end
+
+get '/PopulateDB' do
+  DataMapper.auto_migrate!
+	user = User.create(:nickname => 'oscart',:email=>'oscart@k.com',:password=>'123',
+	        :friends => [{:nickname=>'mayo',:email=>'mayo@k.com',:password=>'123'},
+	                     {:nickname=>'maira',:email=>'maira@k.com',:password=>'123'}])
+	user.save
+  drink = Drink.create(:name => 'Aguila')
+  drink.save
+  drink = Drink.create(:name => 'Aguila Light')
+  drink.save
+  drink = Drink.create(:name => 'Poker')
+  drink.save
+  "Done"	
+end
 
 post '/login' do
   unless requires_authorization!
@@ -57,38 +75,48 @@ post '/login' do
   end
 end
 
-
-
-post '/Authenticate' do
+post '/User/authenticate' do
   unless requires_authorization!
-    if params['email']!="" && params['password']!=""
-      user=User.first(:email =>params['email'],:password =>params['password'])
-      if user
-        user.to_json
-      else
-        {}.to_json
-      end
+    user = User.first(:email =>params['email'],:password =>params['password'])
+    if user
+      {"error_code"=>"0","user"=>user.to_json}.to_json
     else
-      {}.to_json
+      {"error_code"=>"104"}.to_json
     end
   end
 end
 
-
-post '/Signup' do
+post '/User/signup' do
   unless requires_authorization!
     user = User.new
-    user.nickname=params['nickname']
-    user.email=params['email']
-    user.password=params['password']
+    user.nickname = params['nickname']
+    user.email = params['email']
+    user.password = params['password']
     if user.save
-    {"registration"=>{"status"=>"true","error_code"=>"0"}}.to_json
+      {"error_code"=>"0"}.to_json
     else
-      {"registration"=>{"status"=>"false","error_code"=>"100"}}.to_json
+      {"error_code"=>"100"}.to_json
     end
   end
 end
 
+post '/User/drinking' do
+  unless requires_authorization!
+    if params['user_id'] != ""
+      user = User.get(params['user_id'])
+      if user
+        user.drinking = params['drinking']
+        if user.save
+          {"error_code"=>"0"}.to_json
+        else
+          {"error_code"=>"130"}.to_json
+        end
+      else
+        {"error_code"=>"131"}.to_json
+      end
+    end
+  end
+end
 
 post '/Drink/new' do
   unless requires_authorization!
@@ -113,14 +141,14 @@ get '/UserDrink/new' do
   unless requires_authorization!
     user  = User.new
     drink = Drink.new
-    drink.name="Aguila 1"
-    drink.description="Example"
-    user.nickname="Junior"
-    user.drinks<<drink
+    drink.name = "Aguila 1"
+    drink.description = "Example"
+    user.nickname = "Junior"
+    user.drinks << drink
     if user.save
-    "true"
+      "true"
     else
-     "402"
+      "402"
     end
   end
 end
@@ -135,7 +163,7 @@ end
 
 get '/Drink/list' do
   @drinks = Drink.all
-  @drinks.first.name
+  @drinks.to_json
 end
 
 
