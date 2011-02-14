@@ -42,6 +42,23 @@ configure :production do
 end
 
 
+get '/PopulateDB' do
+  DataMapper.auto_migrate!
+	user = User.create(:nickname => 'oscart',:email=>'oscart@k.com',:password=>'123',
+	        :friends => [{:nickname=>'mayo',:email=>'mayo@k.com',:password=>'123'},
+	                     {:nickname=>'maira',:email=>'maira@k.com',:password=>'123'}])
+	user.save
+  drink = Drink.create(:name => 'Aguila')
+  drink.save
+  drink = Drink.create(:name => 'Aguila Light')
+  drink.save
+  drink = Drink.create(:name => 'Poker')
+  drink.save
+  "Done"	
+end
+
+
+
 def requires_authorization!
   unless authorized?
     response['WWW-Authenticate'] = %(Basic realm="Testing HTTP Auth")
