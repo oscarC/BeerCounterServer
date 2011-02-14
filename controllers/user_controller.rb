@@ -16,7 +16,7 @@ post '/User/signup' do
     user.email = params['email']
     user.password = params['password']
     if user.save
-      {"error_code"=>"0"}.to_json
+      {"error_code"=>"0","user"=>user}.to_json
     else
       {"error_code"=>"100"}.to_json
     end
@@ -104,5 +104,14 @@ get '/GetUser' do
      end
  end
 end
+
+
+get '/User/list' do
+  user = User.get(1)
+  user.friends.count
+  
+end
+
+
 
 
