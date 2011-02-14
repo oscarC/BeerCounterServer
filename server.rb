@@ -140,8 +140,11 @@ post '/User/drinking' do
       drink =Drink.get(params[:drink_id])
       if drink
         userdrink=Userdrink.first(:user=>user,:drink=>drink)
-        userdrink.status=params['status']
-        userdrink.stoped_at=Time.now
+        userdrink==params[:drinking]
+        user.drinking=params[:drinking]
+        user.stoped_at=Time.now if params[:drinking]=="false"
+        user.started_at=Time.now if params[:drinking]=="true"
+        user.save
         userdrink.save
         {"response"=>{"status"=>"true","error_code"=>"0"}}.to_json
       else
