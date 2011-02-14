@@ -60,7 +60,7 @@ end
 
 
 
-post '/Authenticate' do
+post '/User/authenticate' do
   unless requires_authorization!
     if params['email']!="" && params['password']!=""
       user=User.first(:email =>params['email'],:password =>params['password'])
@@ -76,7 +76,7 @@ post '/Authenticate' do
 end
 
 
-post '/Signup' do
+post '/User/signup' do
   unless requires_authorization!
     user = User.new
     user.nickname=params['nickname']
@@ -201,6 +201,11 @@ get '/Drink/list' do
   @drinks = Drink.all
   @drinks.to_json
   end
+end
+
+
+get '/welcome' do
+  "Welcome"
 end
 
 
