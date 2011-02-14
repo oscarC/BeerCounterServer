@@ -133,14 +133,14 @@ end
 
 
 #########
-post '/UserDrink/status' do
+post '/User/drinking' do
   unless requires_authorization!
     user=User.get(params[:user_id])
     if user
       drink =Drink.get(params[:drink_id])
       if drink
         userdrink=Userdrink.first(:user=>user,:drink=>drink)
-        userdrink.status=false
+        userdrink.status=params['status']
         userdrink.stoped_at=Time.now
         userdrink.save
         {"response"=>{"status"=>"true","error_code"=>"0"}}.to_json
@@ -154,6 +154,7 @@ post '/UserDrink/status' do
     end
   end
 end
+
 
 get '/GetUser' do
  unless requires_authorization!
