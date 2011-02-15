@@ -44,7 +44,7 @@ end
 
 get '/PopulateDB' do
   DataMapper.auto_migrate!
-	user = User.create(:drinking=>true,:nickname => 'oscart',:email=>'oscart@k.com',:password=>'123',
+	user = User.create(:drinking=>true,:nickname => 'oscart',:email=>'oscart@k.com',:password=>'123',:facebook_id=>'100002095840607',
 	        :friends => [{:nickname=>'mayo',:email=>'mayo@k.com',:password=>'123'},
 	                     {:nickname=>'maira',:email=>'maira@k.com',:password=>'123'}])
 	user.save
