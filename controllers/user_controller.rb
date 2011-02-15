@@ -106,10 +106,24 @@ get '/GetUser' do
 end
 
 
-get '/User/list' do
-  user = User.get(1)
-  user.friends.count
-  
+get '/Friends/feeds' do
+  unless requires_authorization!
+    user = User.get(params[:user_id])
+    if user
+      friendsfeeds = []
+      user.friends.each do |friend|
+        userdrinks=Userdrink.all(:user=>friend)
+        if userdrinks.size > 0
+          userdrinks.each do |userdrink|
+            friendsfeeds.push({:drink_name=>Drink.get(userdrink.drink_id).name,"Location"=>userdrink.location,:count=>userdrink.count,:username=>User.get(userdrink.id).nickname})
+          end
+        end
+      end
+      friendsfeeds.to_json
+    else
+      {}.json
+    end
+  end
 end
 
 
