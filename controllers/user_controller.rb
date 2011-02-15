@@ -1,11 +1,11 @@
 post '/User/authenticate' do
   unless requires_authorization!
-    user = User.first(:nickname =>params['username'],:password =>params['password'])||User.first(:nickname =>params['username'],:password =>params['password']))
+    user = User.first(:nickname =>params['username'],:password =>params['password'])||User.first(:nickname =>params['username'],:password =>params['password'])
     if user
       {"error_code"=>"0","user"=>user}.to_json
     else
       if params['facebook_id'] != ""
-        user = User.first(:facebook_id =>params['facebook_id']
+        user = User.first(:facebook_id =>params['facebook_id'])
         if user
           {"error_code"=>"0","user"=>user}.to_json
         else
