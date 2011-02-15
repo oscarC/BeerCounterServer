@@ -2,7 +2,7 @@ post '/User/authenticate' do
   unless requires_authorization!
     user = User.first(:email =>params['email'],:password =>params['password'])
     if user
-      {"error_code"=>"0","user"=>user.to_json}.to_json
+      {"error_code"=>"0","user"=>user}.to_json
     else
       {"error_code"=>"104"}.to_json
     end
@@ -115,13 +115,18 @@ get '/Friends/feeds' do
         userdrinks=Userdrink.all(:user=>friend)
         if userdrinks.size > 0
           userdrinks.each do |userdrink|
-            friendsfeeds.push({:drink_name=>Drink.get(userdrink.drink_id).name,"Location"=>userdrink.location,:count=>userdrink.count,:username=>User.get(userdrink.id).nickname})
+            friendsfeeds.push({:drink_name=>Drink.get(userdrink.drink_id).name,:location=>userdrink.location,:count=>userdrink.count,:username=>User.get(userdrink.id).nickname})
           end
         end
       end
-      friendsfeeds.to_json
+      if friendsfeeds.size > 0
+        friendsfeeds.to_json
+      else
+        {}.to_json
+      end
+
     else
-      {}.json
+      {}.to_json
     end
   end
 end
