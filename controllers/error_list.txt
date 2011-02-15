@@ -1,0 +1,17 @@
+# Common
+0 Success
+1 Param error
+
+# Users
+100	User couldn't be registered
+101 
+102 User not found
+103
+104 
+105 User with facebook_id doesn't exist
+106 User couldn't be updated
+107 Follower not found
+
+# Drinks
+200 Drink couldn't be saved
+201 Drink not found

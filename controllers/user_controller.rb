@@ -1,10 +1,21 @@
 post '/User/authenticate' do
   unless requires_authorization!
-    user = User.first(:nickname =>params['username'],:password =>params['password'])||User.first(:nickname =>params['username'],:password =>params['password'])|| User.first(:facebook_id =>params['facebook_id'])
+    user = User.first(:nickname =>params['username'],:password =>params['password'])||User.first(:nickname =>params['username'],:password =>params['password']))
     if user
       {"error_code"=>"0","user"=>user}.to_json
     else
-      {"error_code"=>"104"}.to_json
+      if params['facebook_id'] != ""
+        user = User.first(:facebook_id =>params['facebook_id']
+        if user
+          {"error_code"=>"0","user"=>user}.to_json
+        else
+          ## User with facebook id doesn't exist
+          {"error_code"=>"105"}.to_json
+        end
+      else
+        ## User not found
+        {"error_code"=>"102"}.to_json
+      end
     end
   end
 end
@@ -18,6 +29,7 @@ post '/User/signup' do
     if user.save
       {"error_code"=>"0","user"=>user}.to_json
     else
+      ## User couldn't be registered
       {"error_code"=>"100"}.to_json
     end
   end
@@ -25,18 +37,18 @@ end
 
 post '/User/drinking' do
   unless requires_authorization!
-    if params['user_id'] != ""
-      user = User.get(params['user_id'])
-      if user
-        user.drinking = (params['drinking'] == "true")
-        if user.save
-          {"error_code"=>"0"}.to_json
-        else
-          {"error_code"=>"130"}.to_json
-        end
+    user = User.get(params['user_id'])
+    if user
+      user.drinking = (params['drinking'] == "true")
+      if user.save
+        {"error_code"=>"0"}.to_json
       else
-        {"error_code"=>"131"}.to_json
+        ## User couldn't be updated
+        {"error_code"=>"106"}.to_json
       end
+    else
+      ## User not found
+      {"error_code"=>"102"}.to_json
     end
   end
 end
@@ -47,7 +59,7 @@ post '/UserDrink/counter' do
   unless requires_authorization!
     user=User.get(params[:user_id])
     if user
-      drink =Drink.get(params[:drink_id])
+      drink = Drink.get(params[:drink_id])
       if drink
         userdrink=Userdrink.first(:user=>user,:drink=>drink)
         userdrink.count=userdrink.count+1
@@ -55,7 +67,7 @@ post '/UserDrink/counter' do
         {"response"=>{"status"=>"true","error_code"=>"0"}}.to_json
       else
       ## Drink not found
-      {"response"=>{"status"=>"false","error_code"=>"104"}}.to_json
+      {"response"=>{"status"=>"false","error_code"=>"201"}}.to_json
       end
     else
      ## User not found
@@ -67,8 +79,7 @@ end
 #########
 
 post '/User/Follow' do
- unless requires_authorization!
-  if params[:user_id]!=""&&params[:folower_id]!=""
+  unless requires_authorization!
     user=User.get(params[:user_id])
     if user
       follower=User.get(params[:folower_id])
@@ -79,18 +90,13 @@ post '/User/Follow' do
         {"response"=>{"status"=>"true","error_code"=>"0"}}.to_json
       else
         ## User not found
-        {"response"=>{"status"=>"false","error_code"=>"102"}}.to_json
+        {"response"=>{"status"=>"false","error_code"=>"107"}}.to_json
       end
-
     else
       ## User not found
       {"response"=>{"status"=>"false","error_code"=>"102"}}.to_json
     end
-  else
-    #params errors
-    {"response"=>{"status"=>"false","error_code"=>"101"}}.to_json
   end
- end
 end
 
 get '/GetUser' do
@@ -104,7 +110,6 @@ get '/GetUser' do
      end
  end
 end
-
 
 get '/Friends/feeds' do
   unless requires_authorization!
@@ -124,7 +129,6 @@ get '/Friends/feeds' do
       else
         {}.to_json
       end
-
     else
       {}.to_json
     end

@@ -16,10 +16,10 @@ post '/Drink/new' do
       if drink.save
        {"response"=>{"status"=>"true","error_code"=>"0"}}.to_json
       else
-        {"response"=>{"status"=>"true","error_code"=>"104"}}.to_json
+        {"response"=>{"status"=>"true","error_code"=>"200"}}.to_json
       end
     else
-      {"response"=>{"status"=>"true","error_code"=>"100"}}.to_json
+      {"response"=>{"status"=>"true","error_code"=>"1"}}.to_json
     end
   end
 end
