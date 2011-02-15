@@ -2,7 +2,7 @@ post '/User/authenticate' do
   unless requires_authorization!
     user = User.first(:email =>params['email'],:password =>params['password'])
     if user
-      {"error_code"=>"0","user"=>user.to_json}.to_json
+      {"error_code"=>"0","user"=>user}.to_json
     else
       {"error_code"=>"104"}.to_json
     end
@@ -28,7 +28,7 @@ post '/User/drinking' do
     if params['user_id'] != ""
       user = User.get(params['user_id'])
       if user
-        user.drinking = params['drinking']
+        user.drinking = (params['drinking'] == "true")
         if user.save
           {"error_code"=>"0"}.to_json
         else
