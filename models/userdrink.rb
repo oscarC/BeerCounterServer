@@ -6,6 +6,7 @@ class Userdrink
   property :count,       Integer
   property :started_at,  DateTime
   property :drinking,       Boolean
-  belongs_to :user
   belongs_to :drink
+  belongs_to :user
+
 end

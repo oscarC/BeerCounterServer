@@ -16,7 +16,7 @@ post '/User/signup' do
     user.email = params['email']
     user.password = params['password']
     if user.save
-      {"error_code"=>"0"}.to_json
+      {"error_code"=>"0","user"=>user}.to_json
     else
       {"error_code"=>"100"}.to_json
     end
@@ -104,5 +104,33 @@ get '/GetUser' do
      end
  end
 end
+
+
+get '/Friends/feeds' do
+  unless requires_authorization!
+    user = User.get(params[:user_id])
+    if user
+      friendsfeeds = []
+      user.friends.each do |friend|
+        userdrinks=Userdrink.all(:user=>friend)
+        if userdrinks.size > 0
+          userdrinks.each do |userdrink|
+            friendsfeeds.push({:drink_name=>Drink.get(userdrink.drink_id).name,:location=>userdrink.location,:count=>userdrink.count,:username=>User.get(userdrink.id).nickname})
+          end
+        end
+      end
+      if friendsfeeds.size > 0
+        friendsfeeds.to_json
+      else
+        {}.to_json
+      end
+
+    else
+      {}.to_json
+    end
+  end
+end
+
+
 
 

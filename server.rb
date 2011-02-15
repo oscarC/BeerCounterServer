@@ -44,7 +44,7 @@ end
 
 get '/PopulateDB' do
   DataMapper.auto_migrate!
-	user = User.create(:nickname => 'oscart',:email=>'oscart@k.com',:password=>'123',
+	user = User.create(:drinking=>true,:nickname => 'oscart',:email=>'oscart@k.com',:password=>'123',
 	        :friends => [{:nickname=>'mayo',:email=>'mayo@k.com',:password=>'123'},
 	                     {:nickname=>'maira',:email=>'maira@k.com',:password=>'123'}])
 	user.save
@@ -54,6 +54,12 @@ get '/PopulateDB' do
   drink.save
   drink = Drink.create(:name => 'Poker')
   drink.save
+  Userdrink.create(:location=>"Mundo Cerveza",:count=>"5",:started_at=>Time.now,:drinking=>true,:user=>user,:drink=>Drink.get(1))
+  Userdrink.create(:location=>"Sede Juniorista",:count=>"15",:started_at=>Time.now,:drinking=>true,:user=>User.get(2),:drink=>Drink.get(2))
+  Userdrink.create(:location=>"La Troja",:count=>"5",:started_at=>Time.now,:drinking=>true,:user=>User.get(2),:drink=>Drink.get(3))
+
+
+
   "Done"	
 end
 
