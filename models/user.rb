@@ -1,7 +1,7 @@
 class User
   include DataMapper::Resource
   property :id,          Serial
-  property :nickname,        String
+  property :username,        String
   property :email,       String
   property :password,        String
   property :twitter_id,        String
@@ -14,11 +14,10 @@ class User
   has n, :friends, self, :through => :friendships, :via => :target
   has n, :userdrinks
 
-   validates_presence_of :email
-   validates_presence_of :password
-   validates_uniqueness_of :nickname,:if=>:nickname_used?
-   validates_uniqueness_of :email, :if =>:email_used?
-   validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i
+  validates_presence_of :email
+  validates_uniqueness_of :username,:if=>:username_used?,:message=>"103"
+  validates_uniqueness_of :email, :if=>:email_used?,:message=>"104"
+  validates_format_of :email, :with => /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/i, :message=>"108"
 
   def email_used?
     user=User.first(:email =>self.email)
@@ -29,8 +28,8 @@ class User
     end
   end
 
-  def nickname_used?
-    user=User.first(:nickname =>self.nickname)
+  def username_used?
+    user=User.first(:username =>self.username)
     if user
      true
     else

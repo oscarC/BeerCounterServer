@@ -1,0 +1,18 @@
+# Common
+0 Success
+1 Param error
+
+# Users
+100	User couldn't be registered
+101 User with twitter_id doesn't exist
+102 User not found
+103	User with username already exists
+104 User with email already exists
+105 User with facebook_id doesn't exist
+106 User couldn't be updated
+107 Follower not found
+108 Email has an invalid format
+
+# Drinks
+200 Drink couldn't be saved
+201 Drink not found

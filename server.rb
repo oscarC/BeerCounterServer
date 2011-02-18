@@ -44,9 +44,9 @@ end
 
 get '/PopulateDB' do
   DataMapper.auto_migrate!
-	user = User.create(:drinking=>true,:nickname => 'oscart',:email=>'oscart@k.com',:password=>'123',:facebook_id=>'100002095840607',
-	        :friends => [{:nickname=>'mayo',:email=>'mayo@k.com',:password=>'123'},
-	                     {:nickname=>'maira',:email=>'maira@k.com',:password=>'123'}])
+	user = User.create(:drinking=>true,:username => 'oscart',:email=>'oscart@k.com',:password=>'123',:facebook_id=>'100002095840607',
+	        :friends => [{:username=>'mayo',:email=>'mayo@k.com',:password=>'123'},
+	                     {:username=>'maira',:email=>'maira@k.com',:password=>'123'}])
 	user.save
   drink = Drink.create(:name => 'Aguila')
   drink.save
@@ -81,4 +81,3 @@ end
 
 load File.join(File.dirname(__FILE__), 'controllers', 'user_controller.rb')
 load File.join(File.dirname(__FILE__), 'controllers', 'drink_controller.rb')
-load File.join(File.dirname(__FILE__), 'controllers', 'signin_controller.rb')
